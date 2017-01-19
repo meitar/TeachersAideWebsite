@@ -105,7 +105,7 @@ class Handler(BaseHTTPRequestHandler):
 		self.wfile.write(bytes(html, 'utf8'))
 
 
-	def set_cookie(self, username):
+	def set_cookie(self, username=''):
 		self.send_header('Set-Cookie', 'user={}; path=/; HTTPOnly'.format(username))
 		self.end_headers()
 
@@ -176,6 +176,10 @@ class Handler(BaseHTTPRequestHandler):
 
 		if form_input[0] == 'new_username':
 			username = os.path.basename(form_input[1].split('&')[0])
+			if os.path.exists(username + '.json'):
+				self.set_cookie()
+				self.load_new_profile()
+				return
 			password = form_input[2]
 			user_profile = TeacherProfile(username, password)
 			self.set_cookie(username)
