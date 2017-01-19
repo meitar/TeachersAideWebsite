@@ -5,6 +5,7 @@ from jinja2 import Template
 
 import json
 import re
+import os
 
 from Test_creator import Test
 from Profile_creator import TeacherProfile
@@ -174,7 +175,7 @@ class Handler(BaseHTTPRequestHandler):
 		form_input = parse.unquote_plus(self.rfile.read(int(self.headers.get('content-length'))).decode('utf8')).split('=')
 
 		if form_input[0] == 'new_username':
-			username = form_input[1].split('&')[0]
+			username = os.path.basename(form_input[1].split('&')[0])
 			password = form_input[2]
 			user_profile = TeacherProfile(username, password)
 			self.set_cookie(username)
@@ -184,7 +185,7 @@ class Handler(BaseHTTPRequestHandler):
 
 		elif form_input[0] == 'username':
 			try:
-				username = form_input[1].split('&')[0]
+				username = os.path.basename(form_input[1].split('&')[0])
 				entered_password = form_input[2]
 				user_profile = self.decode_JSON(username)
 				if entered_password == user_profile.password:
